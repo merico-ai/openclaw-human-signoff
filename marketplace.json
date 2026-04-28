@@ -7,8 +7,7 @@
       "version": "0.1.0",
       "author": "Merico AI",
       "license": "MIT",
-      "entry": "index.js",
-      "source": "https://github.com/merico-ai/openclaw-human-signoff.git"
+      "entry": "index.js"
     }
   ]
 }
