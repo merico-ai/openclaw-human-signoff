@@ -26,18 +26,36 @@ This works across **all channels** (CLI, TUI, Gateway integrations, etc.) becaus
 
 ## Installation
 
-```bash
-# Clone the repository
+### Method 1: Clone directly to plugins directory
 
 ```bash
-# Clone the repository
 git clone https://github.com/merico-ai/openclaw-human-signoff.git ~/.openclaw/plugins/human-signoff-approval
+openclaw plugins enable human-signoff-approval
+openclaw gateway restart
+```
+
+### Method 2: Install from local directory
+
+```bash
+# Clone to any location
+cd /tmp
+git clone https://github.com/merico-ai/openclaw-human-signoff.git
+
+# Install from local directory
+openclaw plugins install ./openclaw-human-signoff
 
 # Enable the plugin
 openclaw plugins enable human-signoff-approval
 
-# Restart Gateway
+# Restart Gateway (required for plugin to take effect)
 openclaw gateway restart
+```
+
+### Verify installation
+
+```bash
+# Check plugin status
+openclaw plugins list | grep human-signoff
 ```
 
 ## Configuration
@@ -82,22 +100,13 @@ openclaw tui
 
 Through any configured integration, send a command that requires approval. The agent will show the approval URL and automatically continue after you approve.
 
-## Verification
-
-```bash
-# Check plugin status
-openclaw plugins list
-
-# Check plugin details
-openclaw plugins inspect human-signoff-approval
-```
-
 ## Uninstallation
 
 ```bash
 # Disable and remove
 openclaw plugins disable human-signoff-approval
 openclaw plugins uninstall human-signoff-approval
+openclaw gateway restart
 ```
 
 ## Troubleshooting
