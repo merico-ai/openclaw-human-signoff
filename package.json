@@ -3,6 +3,14 @@
   "version": "0.1.0",
   "description": "Auto-handles APPROVAL_PENDING responses from the human-signoff proxy",
   "main": "index.js",
+  "openclaw": {
+    "extensions": [
+      "./index.js"
+    ],
+    "hooks": [
+      "before_prompt_build"
+    ]
+  },
   "keywords": [
     "openclaw",
     "plugin",
