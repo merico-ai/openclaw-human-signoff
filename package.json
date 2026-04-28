@@ -1,0 +1,21 @@
+{
+  "name": "openclaw-human-signoff-approval",
+  "version": "0.1.0",
+  "description": "Auto-handles APPROVAL_PENDING responses from the human-signoff proxy",
+  "main": "index.js",
+  "keywords": [
+    "openclaw",
+    "plugin",
+    "human-signoff",
+    "approval"
+  ],
+  "author": "Merico AI",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/merico-ai/openclaw-human-signoff.git"
+  }
+}

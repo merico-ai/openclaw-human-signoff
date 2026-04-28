@@ -1,0 +1,14 @@
+{
+  "id": "human-signoff-approval",
+  "name": "Human Signoff Approval",
+  "description": "Auto-handles APPROVAL_PENDING responses from the human-signoff proxy. Injects approval handling instructions into every agent turn so the agent knows how to wait for human approval and retry blocked commands.",
+  "version": "0.1.0",
+  "author": "Merico AI",
+  "license": "MIT",
+  "enabledByDefault": true,
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  }
+}
