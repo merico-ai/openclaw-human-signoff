@@ -8,9 +8,7 @@
       "author": "Merico AI",
       "license": "MIT",
       "entry": "index.js",
-      "hooks": [
-        "before_prompt_build"
-      ]
+      "source": "https://github.com/merico-ai/openclaw-human-signoff.git"
     }
   ]
 }
