@@ -26,23 +26,12 @@ This works across **all channels** (CLI, TUI, Gateway integrations, etc.) becaus
 
 ## Installation
 
-### Install from GitHub (recommended)
-
 ```bash
-openclaw plugins install merico-ai/openclaw-human-signoff
-
-# Enable the plugin
-openclaw plugins enable human-signoff-approval
-
-# Restart Gateway
-openclaw gateway restart
-```
-
-### Manual installation
+# Clone the repository
 
 ```bash
 # Clone the repository
-git clone git@github.com:merico-ai/openclaw-human-signoff.git ~/.openclaw/plugins/human-signoff-approval
+git clone https://github.com/merico-ai/openclaw-human-signoff.git ~/.openclaw/plugins/human-signoff-approval
 
 # Enable the plugin
 openclaw plugins enable human-signoff-approval
