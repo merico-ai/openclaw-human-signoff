@@ -26,16 +26,6 @@ This works across **all channels** (CLI, TUI, Gateway integrations, etc.) becaus
 
 ## Installation
 
-### Method 1: Clone directly to plugins directory
-
-```bash
-git clone https://github.com/merico-ai/openclaw-human-signoff.git ~/.openclaw/plugins/human-signoff-approval
-openclaw plugins enable human-signoff-approval
-openclaw gateway restart
-```
-
-### Method 2: Install from local directory
-
 ```bash
 # Clone to any location
 cd /tmp
@@ -50,6 +40,8 @@ openclaw plugins enable human-signoff-approval
 # Restart Gateway (required for plugin to take effect)
 openclaw gateway restart
 ```
+
+### Verify installation
 
 ### Verify installation
 
