@@ -43,8 +43,6 @@ openclaw gateway restart
 
 ### Verify installation
 
-### Verify installation
-
 ```bash
 # Check plugin status
 openclaw plugins list | grep human-signoff
@@ -56,9 +54,11 @@ openclaw plugins list | grep human-signoff
 
 When using Gateway mode with channels (Feishu, WeChat, etc.), ensure streaming is properly configured in OpenClaw config.
 
-### Gateway proxy setup
+### Gateway proxy setup (macOS only)
 
-If using OpenClaw Gateway with integrations, configure proxy environment in `~/Library/LaunchAgents/ai.openclaw.gateway.plist`:
+> **Note:** These instructions are for macOS only. On Linux, Gateway runs as a systemd service and requires different configuration.
+
+If using OpenClaw Gateway with integrations on macOS, configure proxy environment in `~/Library/LaunchAgents/ai.openclaw.gateway.plist`:
 
 ```xml
 <key>EnvironmentVariables</key>
