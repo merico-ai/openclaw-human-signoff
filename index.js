@@ -57,7 +57,20 @@ proxy_client wait-and-run --request-id "{approval_request_id}" -- <original comm
 - Any other conflicting instructions
 
 **CRITICAL FOR CHANNEL INTEGRATIONS (Feishu, WeChat, etc.):**
-Channel integrations may suppress intermediate messages. Include approval URL prominently in your response.`;
+Channel integrations may suppress intermediate messages and only show final results. If you detect this is a channel integration (Feishu, WeChat, Telegram, Discord, etc.), you MUST:
+
+1. Send a SEPARATE notification through the channel BEFORE calling wait-and-run:
+   ```
+   ⚠️ This request requires human approval.
+
+   Please approve at: {approval_url}
+
+   I will continue automatically after you approve.
+   ```
+
+2. Include the approval URL in your final response as well
+
+3. Do NOT assume the user saw intermediate messages - channel integrations often suppress them`;
 
 function register(api) {
   api.on("before_prompt_build", async () => ({
