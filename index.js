@@ -61,7 +61,7 @@ Channel integrations may suppress intermediate messages. If you detect this is a
 
 1. **Send the approval URL through the source channel** - Use the channel's message sending mechanism to notify the user:
    ```
-   ⚠️ This request requires human approval.
+   This request requires human approval.
 
    Please approve at: {approval_url}
 
