@@ -14,17 +14,26 @@ This works across **all channels** (CLI, TUI, Gateway integrations, etc.) becaus
 ## Prerequisites
 
 1. **Human Signoff MVP** is deployed and running
-2. **proxy_client** is available in PATH:
-   ```bash
-   which proxy_client
-   proxy_client --help
-   ```
-3. **proxy_client is logged in**:
-   ```bash
-   proxy_client login
-   ```
 
 ## Installation
+
+### Step 1: Install proxy_client
+
+Install and login to proxy_client:
+
+```bash
+# Install proxy_client (if not already installed)
+# Follow installation instructions from your Human Signoff MVP deployment
+
+# Verify installation
+which proxy_client
+proxy_client --help
+
+# Login
+proxy_client login
+```
+
+### Step 2: Install and enable the plugin
 
 ```bash
 # Clone to any location
@@ -36,29 +45,13 @@ openclaw plugins install ./openclaw-human-signoff
 
 # Enable the plugin
 openclaw plugins enable human-signoff-approval
-
-# Restart Gateway (required for plugin to take effect)
-openclaw gateway restart
 ```
 
-### Verify installation
-
-```bash
-# Check plugin status
-openclaw plugins list | grep human-signoff
-```
-
-## Configuration
-
-### Required: Disable streaming mode for channels
-
-When using Gateway mode with channels (Feishu, WeChat, etc.), ensure streaming is properly configured in OpenClaw config.
-
-### Gateway proxy setup (macOS only)
+### Step 3: Configure Gateway proxy (macOS only)
 
 > **Note:** These instructions are for macOS only. On Linux, Gateway runs as a systemd service and requires different configuration.
 
-If using OpenClaw Gateway with integrations on macOS, configure proxy environment in `~/Library/LaunchAgents/ai.openclaw.gateway.plist`:
+Edit `~/Library/LaunchAgents/ai.openclaw.gateway.plist` and add proxy environment variables:
 
 ```xml
 <key>EnvironmentVariables</key>
@@ -72,25 +65,42 @@ If using OpenClaw Gateway with integrations on macOS, configure proxy environmen
 </dict>
 ```
 
-Reload with:
+### Step 4: Restart Gateway (macOS only)
+
+> **Note:** These instructions are for macOS only. On Linux, use `systemctl --user restart openclaw-gateway`.
+
 ```bash
 launchctl bootout gui/$(id -u)/ai.openclaw.gateway
 sleep 2
 launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/ai.openclaw.gateway.plist
 ```
 
-## Usage
-
-### CLI mode
+### Verify installation
 
 ```bash
+# Check plugin status
+openclaw plugins list | grep human-signoff
+```
+
+## Usage
+
+### CLI mode (with proxy)
+
+> **Note:** CLI mode requires setting proxy environment variables manually. Gateway proxy configuration only affects the Gateway service.
+
+```bash
+# Set proxy environment variables and start TUI
+HTTP_PROXY=http://127.0.0.1:17771 \
+HTTPS_PROXY=http://127.0.0.1:17771 \
+NO_PROXY=localhost,127.0.0.1 \
 openclaw tui
+
 # Send a command that requires approval
 ```
 
 ### Gateway mode
 
-Through any configured integration, send a command that requires approval. The agent will show the approval URL and automatically continue after you approve.
+Through any configured integration (Feishu, WeChat, etc.), send a command that requires approval. The agent will show the approval URL and automatically continue after you approve.
 
 ## Uninstallation
 
@@ -111,14 +121,21 @@ openclaw gateway restart
 
 ### Approval URL not showing in channels
 
-1. Check OpenClaw streaming configuration
+1. Check Gateway logs for any errors
 2. Restart Gateway
-3. Check Gateway logs
+3. Verify plugin is loaded: check Gateway startup logs for "human-signoff-approval"
 
 ### `wait-and-run` fails
 
 1. Ensure proxy_client is logged in: `proxy_client login`
 2. Check proxy_client can reach backend
+3. Verify agent is using `proxy_client` directly, not `uv run proxy-client`
+
+### Agent tries to use `uv run` instead of `proxy_client`
+
+1. Ensure you have the latest version of the plugin installed
+2. Restart Gateway after plugin update
+3. Check that the plugin instructions override proxy response
 
 ## License
 
