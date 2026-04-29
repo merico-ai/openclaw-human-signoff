@@ -84,19 +84,14 @@ openclaw plugins list | grep human-signoff
 
 ## Usage
 
-### CLI mode (with proxy)
-
-> **Note:** CLI mode requires setting proxy environment variables manually. Gateway proxy configuration only affects the Gateway service.
+### TUI mode
 
 ```bash
-# Set proxy environment variables and start TUI
-HTTP_PROXY=http://127.0.0.1:17771 \
-HTTPS_PROXY=http://127.0.0.1:17771 \
-NO_PROXY=localhost,127.0.0.1 \
 openclaw tui
-
 # Send a command that requires approval
 ```
+
+> **Note:** OpenClaw TUI mode goes through Gateway, so Gateway proxy configuration applies automatically.
 
 ### Gateway mode
 
