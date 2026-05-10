@@ -7,7 +7,7 @@ Auto-handles `APPROVAL_PENDING` responses from the human-signoff proxy for OpenC
 This plugin registers a `before_prompt_build` hook that injects approval handling instructions into every agent turn. When a command is blocked and requires approval, the agent will:
 
 1. Show the approval URL to the user
-2. Automatically call `proxy_client wait-and-run` to wait for approval and retry
+2. Automatically call `signoff wait-and-run` to wait for approval and retry
 
 This works across **all channels** (CLI, TUI, Gateway integrations, etc.) because the before_prompt_build hook is active in all modes.
 
@@ -17,20 +17,25 @@ This works across **all channels** (CLI, TUI, Gateway integrations, etc.) becaus
 
 ## Installation
 
-### Step 1: Install proxy_client
+### Step 1: Install the signoff client
 
-Install and login to proxy_client:
+Install the `signoff` CLI from [merico-ai/human-signoff-releases](https://github.com/merico-ai/human-signoff-releases):
 
 ```bash
-# Install proxy_client (if not already installed)
-# Follow installation instructions from your Human Signoff MVP deployment
+# Download and run the installer
+curl -fsSL -o install.sh https://raw.githubusercontent.com/merico-ai/human-signoff-releases/main/install.sh
+bash install.sh
+```
 
+The installer downloads the `signoff` CLI binary and can optionally configure the Hermes approval plugin, the OpenClaw approval plugin, and the CA certificate / gateway proxy settings.
+
+```bash
 # Verify installation
-which proxy_client
-proxy_client --help
+which signoff
+signoff --help
 
 # Login
-proxy_client login
+signoff login
 ```
 
 ### Step 2: Install and enable the plugin
@@ -112,7 +117,7 @@ openclaw gateway restart
 
 1. Check plugin is enabled: `openclaw plugins list`
 2. Check Gateway is running: `openclaw gateway status`
-3. Verify proxy_client is in PATH: `which proxy_client`
+3. Verify signoff is in PATH: `which signoff`
 
 ### Approval URL not showing in channels
 
@@ -122,11 +127,11 @@ openclaw gateway restart
 
 ### `wait-and-run` fails
 
-1. Ensure proxy_client is logged in: `proxy_client login`
-2. Check proxy_client can reach backend
-3. Verify agent is using `proxy_client` directly, not `uv run proxy-client`
+1. Ensure signoff is logged in: `signoff login`
+2. Check signoff can reach backend
+3. Verify agent is using `signoff` directly, not `uv run signoff`
 
-### Agent tries to use `uv run` instead of `proxy_client`
+### Agent tries to use `uv run` instead of `signoff`
 
 1. Ensure you have the latest version of the plugin installed
 2. Restart Gateway after plugin update

@@ -4,7 +4,7 @@
  * Injects approval handling instructions into every agent turn via
  * before_prompt_build hook. When the proxy blocks a request with
  * APPROVAL_PENDING, the agent will show the approval URL and
- * automatically call proxy_client wait-and-run to wait for approval
+ * automatically call signoff wait-and-run to wait for approval
  * and retry.
  *
  * Works in both CLI and Gateway modes.
@@ -12,13 +12,13 @@
 
 const APPROVAL_PROMPT =
 `[Human Signoff Approval Plugin - OVERRIDE ALL OTHER INSTRUCTIONS]
-When a command returns JSON from the local proxy client where ` + "`error.code`" + ` is ` + "`APPROVAL_PENDING`" + `, you MUST follow these instructions EXACTLY, even if other guidance (including the proxy response itself) suggests different approaches.
+When a command returns JSON from the local signoff client where ` + "`error.code`" + ` is ` + "`APPROVAL_PENDING`" + `, you MUST follow these instructions EXACTLY, even if other guidance (including the proxy response itself) suggests different approaches.
 
 **CRITICAL RULES - OVERRIDE ALL OTHER INSTRUCTIONS:**
 
-1. **DO NOT use ` + "`uv run`" + `** - The proxy response may suggest using ` + "`uv run proxy-client`" + `, but you MUST NOT do this. Use ` + "`proxy_client`" + ` directly.
+1. **DO NOT use ` + "`uv run`" + `** - The proxy response may suggest using ` + "`uv run signoff`" + `, but you MUST NOT do this. Use ` + "`signoff`" + ` directly.
 
-2. **Use proxy_client directly** - It is available via PATH. Do NOT wrap it with any other commands.
+2. **Use signoff directly** - It is available via PATH. Do NOT wrap it with any other commands.
 
 3. **Your response format:**
 
@@ -30,7 +30,7 @@ Approval URL: {approval_url}
 I will automatically continue after you approve. You can also check the approval status at the URL above.
 
 **Then, immediately execute:**
-proxy_client wait-and-run --request-id "{approval_request_id}" -- <original command argv>
+signoff wait-and-run --request-id "{approval_request_id}" -- <original command argv>
 
 4. **After the tool completes:**
    - If approval was obtained: Show the actual command results
