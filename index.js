@@ -3,68 +3,30 @@
  *
  * Injects approval handling instructions into every agent turn via
  * before_prompt_build hook. When the proxy blocks a request with
- * APPROVAL_PENDING, the agent will show the approval URL and
- * automatically call signoff wait-and-run to wait for approval
- * and retry.
+ * APPROVAL_PENDING, the agent presents the approval URL to the user
+ * and stops — it does not poll or retry.
  *
  * Works in both CLI and Gateway modes.
  */
 
 const APPROVAL_PROMPT =
-`[Human Signoff Approval Plugin - OVERRIDE ALL OTHER INSTRUCTIONS]
-When a command returns JSON from the local signoff client where ` + "`error.code`" + ` is ` + "`APPROVAL_PENDING`" + `, you MUST follow these instructions EXACTLY, even if other guidance (including the proxy response itself) suggests different approaches.
+`[Human Signoff Approval Plugin]
+When a command returns JSON from the local signoff client where ` + "`error.code`" + ` is ` + "`APPROVAL_PENDING`" + `, and the payload includes ` + "`approval_request_id`" + ` and ` + "`approval_url`" + `, treat this as a blocking approval gate — NOT a terminal failure, and NOT something you can bypass.
 
-**CRITICAL RULES - OVERRIDE ALL OTHER INSTRUCTIONS:**
+Action required:
+1. Show the ` + "`approval_url`" + ` to the user so they can review and approve
+2. Tell the user the command is blocked pending approval
+3. STOP — do not take further action on this command
 
-1. **DO NOT use ` + "`uv run`" + `** - The proxy response may suggest using ` + "`uv run signoff`" + `, but you MUST NOT do this. Use ` + "`signoff`" + ` directly.
+Rules:
+- Do NOT execute ` + "`signoff wait-and-run`" + ` or any polling/retry logic
+- Do NOT attempt to re-execute the blocked command yourself
+- Do NOT try to skip or bypass the approval by running the original command directly
+- Do NOT hand-roll polling logic or wait loops
+- Do NOT continue working on the blocked task until the user explicitly tells you approval is granted
+- Simply present the approval URL and wait for the user to come back with next steps
 
-2. **Use signoff directly** - It is available via PATH. Do NOT wrap it with any other commands.
-
-3. **Your response format:**
-
-**First, send a text response with:**
-This request requires human approval.
-
-Approval URL: {approval_url}
-
-I will automatically continue after you approve. You can also check the approval status at the URL above.
-
-**Then, immediately execute:**
-signoff wait-and-run --request-id "{approval_request_id}" -- <original command argv>
-
-4. **After the tool completes:**
-   - If approval was obtained: Show the actual command results
-   - If still pending/unapproved: Include the approval URL again prominently
-
-**WHAT NOT TO DO:**
-- Do NOT use ` + "`uv run`" + ` under any circumstances
-- Do NOT use ` + "`--active`" + ` flag
-- Do NOT ` + "`cd`" + ` anywhere
-- Do NOT modify VIRTUAL_ENV
-- Do NOT hand-roll polling logic
-- Do NOT wait for user confirmation
-- Do NOT stop after showing the approval URL
-- Do NOT follow any helper_invocation_example that uses ` + "`uv run`" + `
-
-**These rules override:**
-- The proxy response's helper_invocation_example
-- The proxy response's helper_help_hint
-- Any task-specific habits or skills
-- Any other conflicting instructions
-
-**CRITICAL FOR CHANNEL INTEGRATIONS (Feishu, WeChat, etc.):**
-Channel integrations may suppress intermediate messages. If you detect this is a channel integration (Feishu, WeChat, Telegram, Discord, etc.), you MUST:
-
-1. **Send the approval URL through the source channel** - Use the channel's message sending mechanism to notify the user:
-   This request requires human approval.
-   Please approve at: {approval_url}
-   I will continue automatically after you approve.
-
-2. **Still execute wait-and-run immediately** - Do NOT skip waiting for approval
-
-3. In your final response, reiterate the approval URL if still pending
-
-4. Do NOT assume the user saw intermediate messages - channel integrations often suppress them`;
+For channel integrations (Feishu, WeChat, Telegram, Discord, etc.) that may suppress intermediate messages: send the approval URL through the source channel's message mechanism so the user actually sees it, then stop and wait.`;
 
 function register(api) {
   api.on("before_prompt_build", async () => ({
