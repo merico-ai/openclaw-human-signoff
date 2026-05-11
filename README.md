@@ -1,13 +1,14 @@
 # OpenClaw Human Signoff Approval Plugin
 
-Auto-handles `APPROVAL_PENDING` responses from the human-signoff proxy for OpenClaw.
+Auto-handles `APPROVAL_PENDING` responses from Human Signoff for OpenClaw.
 
 ## How it works
 
 This plugin registers a `before_prompt_build` hook that injects approval handling instructions into every agent turn. When a command is blocked and requires approval, the agent will:
 
 1. Show the approval URL to the user
-2. Automatically call `signoff wait-and-run` to wait for approval and retry
+2. Automatically call `signoff wait` to wait for approval completion
+3. Retry the original command after approval is granted
 
 This works across **all channels** (CLI, TUI, Gateway integrations, etc.) because the before_prompt_build hook is active in all modes.
 
@@ -125,17 +126,18 @@ openclaw gateway restart
 2. Restart Gateway
 3. Verify plugin is loaded: check Gateway startup logs for "human-signoff-approval"
 
-### `wait-and-run` fails
+### `signoff wait` fails
 
 1. Ensure signoff is logged in: `signoff login`
 2. Check signoff can reach backend
-3. Verify agent is using `signoff` directly, not `uv run signoff`
+3. Verify the approval request ID is correct
+4. Ensure the agent is using `signoff` directly, not `uv run signoff`
 
 ### Agent tries to use `uv run` instead of `signoff`
 
 1. Ensure you have the latest version of the plugin installed
 2. Restart Gateway after plugin update
-3. Check that the plugin instructions override proxy response
+3. Check that the plugin instructions describe user-defined approval rules, not implementation details
 
 ## License
 
